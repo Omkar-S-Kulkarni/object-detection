@@ -1,5 +1,5 @@
 # =============================================
-# main.py (Place this in root directory)
+# main.py 
 # =============================================
 import torch
 from torch.utils.data import DataLoader, WeightedRandomSampler
@@ -49,7 +49,7 @@ def main():
     
     # Check data directory
     if not os.path.exists("data"):
-        print("\n❌ Error: 'data' directory not found!")
+        print("\nError: 'data' directory not found!")
         print("Please organize your data as follows:")
         print("data/")
         print("├── train/")
@@ -67,7 +67,7 @@ def main():
     os.makedirs("outputs", exist_ok=True)
     
     # Load datasets
-    print("\n📁 Loading datasets...")
+    print("\n Loading datasets...")
     train_transform = get_transforms('train')
     test_transform = get_transforms('test')
     
@@ -76,11 +76,11 @@ def main():
         val_data = datasets.ImageFolder("data/validation", transform=test_transform)
         test_data = datasets.ImageFolder("data/test", transform=test_transform)
     except FileNotFoundError as e:
-        print(f"❌ Error loading data: {e}")
+        print(f" Error loading data: {e}")
         return
     
     # Print dataset info
-    print(f"\n📊 Dataset Information:")
+    print(f"\n Dataset Information:")
     print(f"Training samples: {len(train_data):,}")
     print(f"Validation samples: {len(val_data):,}")
     print(f"Test samples: {len(test_data):,}")
@@ -115,7 +115,7 @@ def main():
     print(f"Validation batches: {len(val_loader)}")
     
     # Build model with proper regularization
-    print(f"\n🏗️  Building model...")
+    print(f"\n  Building model...")
     model = build_densenet_model(num_classes=1, dropout_rate=0.5).to(device)
     
     # Use class weights in loss function to handle imbalance
@@ -136,7 +136,7 @@ def main():
     print(f"Frozen parameters: {sum(p.numel() for p in model.parameters()) - trainable_params:,}")
     
     # Training
-    print(f"\n🎯 Starting training...")
+    print(f"\n Starting training...")
     start_time = time.time()
     
     train_losses, val_losses, train_accs, val_accs = train(
@@ -145,10 +145,10 @@ def main():
     
     end_time = time.time()
     training_time = end_time - start_time
-    print(f"\n⏱️  Total training time: {training_time/60:.1f} minutes")
+    print(f"\n  Total training time: {training_time/60:.1f} minutes")
     
     # Plot results
-    print(f"\n📈 Generating plots...")
+    print(f"\n Generating plots...")
     plot_loss_curve(train_losses, val_losses)
     
     # Define the path to the best model
@@ -162,36 +162,36 @@ def main():
                 model.load_state_dict(checkpoint['model_state_dict'])
             else:
                 model.load_state_dict(checkpoint)
-            print("✅ Successfully loaded best model!")
+            print(" Successfully loaded best model!")
         except Exception as e:
-            print(f"⚠️ Could not load best model: {e}")
+            print(f" Could not load best model: {e}")
             print("Using current model state for evaluation")
     else:
-        print("⚠️ Best model file not found, using current model state")
+        print("Best model file not found, using current model state")
     
-    print(f"\n🧪 Evaluating on test set...")
+    print(f"\n Evaluating on test set...")
     test_accuracy, roc_auc = evaluate(model, test_loader, device, class_names=train_data.classes)
     
-    print(f"\n🖼️  Generating prediction visualizations...")
+    print(f  Generating prediction visualizations...")
     visualize_predictions(model, test_loader, device)
     
     # Final summary
     print(f"\n" + "="*60)
-    print(f"🎉 TRAINING COMPLETED SUCCESSFULLY!")
+    print(f" TRAINING COMPLETED SUCCESSFULLY!")
     print(f"="*60)
-    print(f"📊 Final Results:")
+    print(f Final Results:")
     print(f"   • Test Accuracy: {test_accuracy:.2f}%")
     print(f"   • ROC AUC Score: {roc_auc:.3f}")
     print(f"   • Training Time: {training_time/60:.1f} minutes")
     print(f"   • Best Model: {best_model_path}")
-    print(f"📁 Generated Files:")
+    print(f" Generated Files:")
     print(f"   • {best_model_path}")
     print(f"   • outputs/loss_curve.png")
     print(f"   • outputs/confusion_matrix.png")
     print(f"   • outputs/roc_curve.png")
     print(f"   • outputs/predictions_visualization.png")
     
-    print(f"\n🌐 Ready for Streamlit app!")
+    print(f"\n Ready for Streamlit app!")
     print(f"Run: streamlit run app.py")
 
 if __name__ == "__main__":
